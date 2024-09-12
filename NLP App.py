@@ -3,12 +3,14 @@ import nltk
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet
-from nltk import pos_tag, ne_chunk
+import spacy
+
+nlp = spacy.load("en_core_web_sm")
 
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
 nltk.download('punkt')
+nltk.download('stopwords')
 
 st.title("Natural Language Processing Interface")
 
@@ -48,7 +50,7 @@ elif options == "Tokenize":
     st.write("Tokenized text:", tokens)
 
 elif options == "Morphological analyze":
-    pos_tags = pos_tag(word_tokenize(text))
+    pos_tags = nlp(text).pos_
     st.write("Part-of-speech tags:", pos_tags)
 
 elif options == "Word Generate":
@@ -60,8 +62,9 @@ elif options == "Word Generate":
     st.write("Generated words:", generated_words)
 
 elif options == "Chunking":
-    chunked = ne_chunk(pos_tag(word_tokenize(text)))
-    st.write("Chunked text:", chunked)
+    doc = nlp(text)
+    chunks = [(chunk.text, chunk.label_) for chunk in doc.noun_chunks]
+    st.write("Chunks:", chunks)
 
 elif options == "Stop Word Removal":
     stop_words = set(nltk.corpus.stopwords.words('english'))
@@ -69,5 +72,6 @@ elif options == "Stop Word Removal":
     st.write("Text without stop words:", tokens)
 
 elif options == "Named Entity Recognition":
-    named_entities = ne_chunk(pos_tag(word_tokenize(text)))
-    st.write("Named entities:", named_entities)
+    doc = nlp(text)
+    entities = [(ent.text, ent.label_) for ent in doc.ents]
+    st.write("Named entities:", entities)
