@@ -50,7 +50,8 @@ elif options == "Tokenize":
     st.write("Tokenized text:", tokens)
 
 elif options == "Morphological analyze":
-    pos_tags = nlp(text).pos_
+    doc = nlp(text)
+    pos_tags = [(token.text, token.pos_) for token in doc]
     st.write("Part-of-speech tags:", pos_tags)
 
 elif options == "Word Generate":
